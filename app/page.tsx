@@ -1,100 +1,195 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [language, setLanguage] = useState('en');
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  // تحميل اللغة المحفوظة عند بدء التشغيل
+  useEffect(() => {
+    const savedLang = localStorage.getItem('language');
+    if (savedLang === 'ar' || savedLang === 'en') {
+      setLanguage(savedLang);
+      document.documentElement.dir = savedLang === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.lang = savedLang;
+    }
+  }, []);
+
+  const toggleLanguage = () => {
+    const newLang = language === 'en' ? 'ar' : 'en';
+    setLanguage(newLang);
+    document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = newLang;
+    localStorage.setItem('language', newLang);
+  };
+
+  const texts = {
+    en: {
+      title: 'CarbonMirror',
+      subtitle: 'See the planet reacting to you',
+      start: '🌍 Start Your Planet',
+      features: 'Features',
+      realtime: 'Real-time 3D Visualization',
+      realtimeDesc: 'Watch your planet change color based on your carbon score',
+      track: 'Track Your Impact',
+      trackDesc: 'Every action you take affects your personal Earth',
+      predict: 'AI Predictions',
+      predictDesc: 'See your future impact with our prediction engine',
+      share: 'Share & Compete',
+      shareDesc: 'Compare your score with friends worldwide'
+    },
+    ar: {
+      title: 'CarbonMirror',
+      subtitle: 'شاهد الكوكب يتفاعل معك',
+      start: '🌍 ابدأ كوكبك',
+      features: 'المميزات',
+      realtime: 'تصور ثلاثي الأبعاد فوري',
+      realtimeDesc: 'شاهد كوكبك يتغير لونه بناءً على درجة الكربون',
+      track: 'تتبع تأثيرك',
+      trackDesc: 'كل قرار تتخذه يؤثر على كوكبك الشخصي',
+      predict: 'توقعات الذكاء الاصطناعي',
+      predictDesc: 'شاهد تأثيرك المستقبلي',
+      share: 'شارك وتنافس',
+      shareDesc: 'قارن نتيجتك مع أصدقائك حول العالم'
+    }
+  };
+
+  const t = texts[language as keyof typeof texts];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-black">
+      {/* Language Toggle Button */}
+      <button
+        onClick={toggleLanguage}
+        className="fixed top-4 right-4 z-50 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full text-white hover:bg-white/20 transition-all text-sm font-bold"
+      >
+        {language === 'en' ? '🇸🇦 العربية' : '🇬🇧 English'}
+      </button>
+
+      {/* Hero Section */}
+      <div className="relative min-h-screen flex flex-col items-center justify-center px-4">
+        <motion.h1 
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="text-6xl md:text-8xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500"
+        >
+          {t.title}
+        </motion.h1>
+        
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 1 }}
+          className="text-xl md:text-2xl mt-6 text-center max-w-2xl text-white/90"
+        >
+          {t.subtitle}
+        </motion.p>
+        
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1, duration: 0.8 }}
+          className="mt-12"
+        >
+          <Link href="/planet">
+            <button className="px-8 py-4 bg-gradient-to-r from-green-500 to-blue-500 rounded-full text-xl font-bold hover:scale-105 transition-transform shadow-2xl text-white">
+              {t.start}
+            </button>
+          </Link>
+        </motion.div>
+
+        {/* Stats Section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5, duration: 0.8 }}
+          className="mt-20 grid grid-cols-1 md:grid-cols-4 gap-6 max-w-4xl mx-auto text-center"
+        >
+          <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6">
+            <p className="text-3xl font-bold text-green-400">🌍 3D</p>
+            <p className="text-white/70 text-sm mt-2">Interactive Earth</p>
+          </div>
+          <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6">
+            <p className="text-3xl font-bold text-blue-400">⚡ Real-time</p>
+            <p className="text-white/70 text-sm mt-2">Instant Feedback</p>
+          </div>
+          <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6">
+            <p className="text-3xl font-bold text-purple-400">🤖 AI</p>
+            <p className="text-white/70 text-sm mt-2">Predictions</p>
+          </div>
+          <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6">
+            <p className="text-3xl font-bold text-yellow-400">🏆 Free</p>
+            <p className="text-white/70 text-sm mt-2">Forever</p>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Features Section */}
+      <div className="py-20 px-4 bg-black/30">
+        <div className="max-w-6xl mx-auto">
+          <motion.h2
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            className="text-3xl md:text-4xl font-bold text-center text-white mb-12"
           >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            {t.features}
+          </motion.h2>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="bg-white/5 backdrop-blur-md rounded-2xl p-6 text-center hover:scale-105 transition-transform"
+            >
+              <div className="text-5xl mb-4">🌍</div>
+              <h3 className="text-xl font-bold text-white mb-2">{t.realtime}</h3>
+              <p className="text-white/60 text-sm">{t.realtimeDesc}</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-white/5 backdrop-blur-md rounded-2xl p-6 text-center hover:scale-105 transition-transform"
+            >
+              <div className="text-5xl mb-4">📊</div>
+              <h3 className="text-xl font-bold text-white mb-2">{t.track}</h3>
+              <p className="text-white/60 text-sm">{t.trackDesc}</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="bg-white/5 backdrop-blur-md rounded-2xl p-6 text-center hover:scale-105 transition-transform"
+            >
+              <div className="text-5xl mb-4">🔮</div>
+              <h3 className="text-xl font-bold text-white mb-2">{t.predict}</h3>
+              <p className="text-white/60 text-sm">{t.predictDesc}</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-white/5 backdrop-blur-md rounded-2xl p-6 text-center hover:scale-105 transition-transform"
+            >
+              <div className="text-5xl mb-4">👥</div>
+              <h3 className="text-xl font-bold text-white mb-2">{t.share}</h3>
+              <p className="text-white/60 text-sm">{t.shareDesc}</p>
+            </motion.div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </div>
+
+      {/* Footer */}
+      <footer className="py-8 text-center text-white/40 text-sm">
+        <p>© 2024 CarbonMirror - Make Climate Change Visible</p>
       </footer>
     </div>
   );
