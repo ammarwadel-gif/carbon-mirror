@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://carbon-mirror.vercel.app
+
+# Sitemaps
+Sitemap: https://carbon-mirror.vercel.app/sitemap.xml
